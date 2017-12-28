@@ -9,7 +9,7 @@ public class CustomStack<T> implements Iterable<T> {
 	Object[] dataObjects, dataObjects2;
 
 	public CustomStack() {
-		init(this.capacity);
+		init(CustomStack.capacity);
 	}
 
 	public CustomStack(int initcapacity) {
@@ -17,13 +17,13 @@ public class CustomStack<T> implements Iterable<T> {
 	}
 
 	private void init(int capacity) {
-		this.capacity = capacity;
-		dataObjects = new Object[this.capacity];
+		CustomStack.capacity = capacity;
+		dataObjects = new Object[CustomStack.capacity];
 
 	}
 
-	public void push(Object data) {
-		if (this.top < this.capacity - 1) {
+	public void push(T data) {
+		if (this.top < CustomStack.capacity - 1) {
 			this.top++;
 			dataObjects[this.top] = data;
 			dataObjects2 = new Object[this.top + 1];
@@ -67,10 +67,10 @@ public class CustomStack<T> implements Iterable<T> {
 		return minimum;
 	}
 
-	public Object get(int index) {
+	public T get(int index) {
 
 		if (dataObjects[index] != null) {
-			return dataObjects[index];
+			return (T)dataObjects[index];
 		} else {
 			return null;
 		}

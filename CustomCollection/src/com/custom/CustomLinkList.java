@@ -1,10 +1,10 @@
 package com.custom;
 
-
 public class CustomLinkList<V extends Object> {
 
 	Node start;
 	Node end;
+	Node ptr1;
 	V data;
 	int size = 0;
 
@@ -16,7 +16,7 @@ public class CustomLinkList<V extends Object> {
 
 	public void addAtFirst(V data) {
 		Node<Object> node = new Node<>(data, null);
-		size++;
+
 		if (start == null) {
 			start = node;
 			end = start;
@@ -24,7 +24,7 @@ public class CustomLinkList<V extends Object> {
 			node.setNextLink(start);
 			start = node;
 		}
-
+		size++;
 	}
 
 	public void addAtEnd(V data) {
@@ -66,10 +66,46 @@ public class CustomLinkList<V extends Object> {
 		return null;
 	}
 
-	public void printEnd(){
+	public Node getIndex(int pos) {
+		Node ptr = start;
+		for (int i = 0; i <= pos; i++) {
+
+			if (pos == i) {
+				return ptr;
+			}
+			ptr = ptr.getNextLink();
+		}
+		return null;
+	}
+
+	public void pop() {
+		Node temp = start.nextLink;
+		start = null;
+		start = temp;
+	}
+
+	public void addpos(V data, int pos) {
+		Node add = new Node(data, null);
+		int i_x = pos - 1;
+
+		// add.nextLink = start;
+
+		Node previous = start;
+
+		for (int i = 0; i <= pos - 1; i++) {
+			previous = previous.nextLink;
+		}
+
+		add.nextLink = previous.nextLink;
+		previous.nextLink = add;
+
+		size++;
+	}
+
+	public void printEnd() {
 		System.out.println(end.getData());
 	}
-	
+
 	static class Node<V> {
 		V data;
 		Node nextLink;
@@ -97,19 +133,25 @@ public class CustomLinkList<V extends Object> {
 
 	}
 
-// This how linklist will work	
-//	public static void main(String... strings) {
-//		CustomLinkList<Integer> customLinkList = new CustomLinkList<>();
-//		customLinkList.addAtFirst(1);
-//		customLinkList.addAtEnd(2);
-//		customLinkList.addAtEnd(5);
-//		customLinkList.addAtFirst(3);
-//		customLinkList.addAtFirst(4);
-//
-//		customLinkList.printEnd();
-//		
-//		// customLinkList.display();
-//		//System.out.println(customLinkList.get(0));
-//
-//	}
+	public static void main(String... strings) {
+		CustomLinkList<Integer> customLinkList = new CustomLinkList<>();
+		customLinkList.addAtFirst(1);
+		customLinkList.addAtFirst(2);
+		customLinkList.addAtFirst(3);
+		customLinkList.addAtFirst(4);
+		customLinkList.addAtFirst(5);
+		customLinkList.addAtFirst(6);
+		customLinkList.addAtFirst(7);
+		customLinkList.addAtFirst(8);
+
+		// customLinkList.printEnd();
+
+		// customLinkList.pop();
+		// customLinkList.display();
+
+		customLinkList.addpos(12, 0);
+		customLinkList.display();
+		// System.out.println(customLinkList.get(0));
+
+	}
 }

@@ -1,6 +1,9 @@
 package com.custom;
 
-public class CustomLinkList<V extends Object> {
+import java.util.Iterator;
+import java.util.Objects;
+
+public class CustomLinkList<V extends Object> implements Iterable<V> {
 
 	Node start;
 	Node end;
@@ -133,6 +136,45 @@ public class CustomLinkList<V extends Object> {
 
 	}
 
+	@Override
+	public Iterator<V> iterator() {
+		// TODO Auto-generated method stub
+		return new LinkItr();
+	}
+
+	class LinkItr implements Iterator<V> {
+
+		Node itrStart = start;
+		V data;
+
+		@Override
+		public boolean hasNext() {
+			// TODO Auto-generated method stub
+
+			boolean flag = false;
+			if (!Objects.isNull(itrStart)) {
+				data = (V) itrStart.data;
+				flag = true;
+			}
+
+			return flag;
+		}
+
+		@Override
+		public V next() {
+			// TODO Auto-generated method stub
+
+			if (hasNext()) {
+				itrStart = itrStart.nextLink;
+				return data;
+			} else {
+				return null;
+			}
+
+		}
+
+	}
+
 	public static void main(String... strings) {
 		CustomLinkList<Integer> customLinkList = new CustomLinkList<>();
 		customLinkList.addAtFirst(1);
@@ -149,9 +191,16 @@ public class CustomLinkList<V extends Object> {
 		// customLinkList.pop();
 		// customLinkList.display();
 
-		customLinkList.addpos(12, 0);
-		customLinkList.display();
+		// customLinkList.addpos(12, 0);
+
+		for (int k : customLinkList) {
+
+			System.out.println(k);
+
+		}
+		// customLinkList.display();
 		// System.out.println(customLinkList.get(0));
 
 	}
+
 }

@@ -1,12 +1,17 @@
 package com.custom;
 
-public class CustomHashMap<K, T> {
+import java.util.Iterator;
+import java.util.Objects;
+
+public class CustomHashMap<K, T> implements Iterable<Entity>{
 
 	private static final int capacity_init = 10;
 	static final float DEFAULT_LOAD_FACTOR = 0.75f;
-
+    private int indexCount = 0; 
 	Entity[] bucket = null;
 
+	Entity[] bucketItr = null;
+	
 	public CustomHashMap() {
 		init(capacity_init);
 	}
@@ -39,6 +44,7 @@ public class CustomHashMap<K, T> {
 
 		int hashcode = hash(key);
 		if (bucket[hashcode] == null) {
+			indexCount++;
 			Entity head = new Entity(key, value, null);
 			bucket[hashcode] = head;
 		} else {
@@ -52,6 +58,9 @@ public class CustomHashMap<K, T> {
 		    bucket[hashcode] = neEntity;
 		}
 
+		bucketItr = new Entity[bucket.length];
+		System.arraycopy(bucket, 0, bucketItr, 0, bucket.length);
+		
 	}
 
 	/*
@@ -70,7 +79,7 @@ public class CustomHashMap<K, T> {
 			return null;
 		} else {
 			Entity temp = bucket[hashcode];
-			while (temp.next != null) {
+			while (temp!= null) {
 				
 				if (temp.key.equals(key)) {
 					return (T) temp.value;
@@ -90,30 +99,69 @@ public class CustomHashMap<K, T> {
 		bucket[hashcode] = deleteNode;
 	}
 	
-	static class Entity<K, T> {
-		K key;
-		T value;
-		Entity next;
+	@Override
+	public Iterator<Entity> iterator() {
+		// TODO Auto-generated method stub
+		bucketItr =  new Entity[indexCount];
+		int entryCount = 0;
+		for(Entity e:bucket) {
+			
+			if(Objects.nonNull(e)) {
+				bucketItr[entryCount] = e;
+				entryCount++;
+			}
+			
+		}
+		
+		return new MapItr();
+	}
+	
+	
+	class MapItr implements Iterator<Entity>{
 
-		public Entity(K key, T value, Entity next) {
-
-			this.key = key;
-			this.value = value;
-			this.next = next;
-
+		int count =0;
+		
+		@Override
+		public boolean hasNext() {
+			// TODO Auto-generated method stub
+			return this.count<bucketItr.length;
 		}
 
+		@Override
+		public Entity next() {
+			// TODO Auto-generated method stub
+			
+			if(hasNext()){
+				Entity node  = bucketItr[count];
+				count++;
+				return node;
+			}else {
+			return null;
+			}
+		}
+		
 	}
+	
+	
+	
 
  //Example How to use this map
 	public static void main(String... str) {
 
 		CustomHashMap<Integer, Object> customHashMap = new CustomHashMap<>();
 		customHashMap.add(1, 1);
-		customHashMap.add(1, "simmant");
-
-		System.out.println(customHashMap.get(1));
-		System.out.println(customHashMap.get(1));
+		customHashMap.add(2, "simmant");
+		customHashMap.add(3, "simmant1"); 
+		
+//		System.out.println(customHashMap.get(1));
+//		System.out.println(customHashMap.get(2));
+//		System.out.println(customHashMap.get(3));
+		
+		// Order of Output in map is depends on Hash value of key.
+		for(Entity e:customHashMap) {
+			
+			System.out.println(e.key+" "+e.value);
+		}
 //		
 //		customHashMap.update(2, 2);
 //		
@@ -125,6 +173,23 @@ public class CustomHashMap<K, T> {
 //		System.out.println(customHashMap.get(2));// null will be return 
 //		
 //		System.out.println(customHashMap.get(5));// null will be return 
+	}
+
+
+
+}
+
+class Entity<K, T> {
+	K key;
+	T value;
+	Entity next;
+
+	public Entity(K key, T value, Entity next) {
+
+		this.key = key;
+		this.value = value;
+		this.next = next;
+
 	}
 
 }

@@ -1,6 +1,6 @@
 package com.custom;
 
-public class CustomHashMap<K extends Integer, T extends Object> {
+public class CustomHashMap<K, T> {
 
 	private static final int capacity_init = 10;
 	static final float DEFAULT_LOAD_FACTOR = 0.75f;
@@ -39,9 +39,7 @@ public class CustomHashMap<K extends Integer, T extends Object> {
 
 		int hashcode = hash(key);
 		if (bucket[hashcode] == null) {
-			Entity head = new Entity(null, null, null);
-			Entity next = new Entity(key, value, null);
-			head.next = next;
+			Entity head = new Entity(key, value, null);
 			bucket[hashcode] = head;
 		} else {
 
@@ -50,7 +48,8 @@ public class CustomHashMap<K extends Integer, T extends Object> {
 				temp = temp.next;
 			}
 			Entity neEntity = new Entity(key, value, null);
-			temp.next = neEntity;
+		    neEntity.next = temp;
+		    bucket[hashcode] = neEntity;
 		}
 
 	}
@@ -72,10 +71,11 @@ public class CustomHashMap<K extends Integer, T extends Object> {
 		} else {
 			Entity temp = bucket[hashcode];
 			while (temp.next != null) {
-				temp = temp.next;
+				
 				if (temp.key.equals(key)) {
 					return (T) temp.value;
 				}
+				temp = temp.next;
 			}
 			return null;
 		}
@@ -83,24 +83,6 @@ public class CustomHashMap<K extends Integer, T extends Object> {
 	}
 
 	
-	/*
-	 * Below is the steps to description about how update method will work
-	 * 
-	 * i)  1st it will get current data from get method and assign to new data object.
-	 * ii) Then it will call hash method for key passed with method, and will check with same hashcode in bucket and assign it to update object.
-	 * iii) Then passed value, will assign to value of update.next, and then update Object will assign to bucket to same hashcode.
-	 * iv) After that method will return oldvalue.
-	 */
-	
-	public T update(K key, T value) {
-		T oldvalue = get(key);
-		int hashcode = hash(key);
-		Entity update = bucket[hashcode];
-        update.next.value = value;
-		bucket[hashcode] = update;
-		return oldvalue;
-	}
-
 	public void delete(K key){
 		int hashcode = hash(key);
 		Entity deleteNode = bucket[hashcode];

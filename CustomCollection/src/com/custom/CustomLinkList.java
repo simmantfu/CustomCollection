@@ -3,7 +3,7 @@ package com.custom;
 import java.util.Iterator;
 import java.util.Objects;
 
-public class CustomLinkList<V extends Object> implements Iterable<V> {
+public class CustomLinkList<V> implements Iterable<V> {
 
 	Node start;
 	Node end;

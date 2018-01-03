@@ -1,39 +1,48 @@
 package com.custom;
 
-import org.w3c.dom.css.CSSUnknownRule;
+import java.util.Iterator;
+import java.util.Objects;
 
-public class CustomDoubleLink<V> {
+public class CustomDoubleLink<V> implements Iterable<V> {
 
 	Node start;
+    Node end; 
 	
+	public void add(V data) {
 
-	public void add(V data){
-		
 		Node node = new Node<V>(null, null, data);
 		Node last = start;
-		if(start == null){
+		if (start == null) {
 			start = node;
-			}else{
-				
-				while(last.next!=null){
-				  last = last.next;
-				}
-		      last.next = node;
-		      node.prev = last;
+		} else {
+
+			while (last.next != null) {
+				last = last.next;
+			}
+			last.next = node;
+			node.prev = last;
+			end = node;
 		}
-		
+
 	}
 
-	public void printREV(){
-		
+	public void print() {
+
 		Node ptr = start;
-		while(ptr!=null)
-		{
+		while (ptr != null) {
 			System.out.println(ptr.data);
 			ptr = ptr.next;
 		}
 	}
-	
+
+	public void printREV() {
+
+		Node ptr = end;
+		while (ptr != null) {
+			System.out.println(ptr.data);
+			ptr = ptr.prev;
+		}
+	}
 	
 	class Node<V> {
 		V data;
@@ -45,7 +54,7 @@ public class CustomDoubleLink<V> {
 			this.data = data;
 			this.next = next;
 			this.data = data;
-			
+
 		}
 
 		public V getData() {
@@ -74,18 +83,56 @@ public class CustomDoubleLink<V> {
 
 	}
 
-	
-	public static void main(String...strings){
-		CustomDoubleLink<Integer> customDoubleLink = new CustomDoubleLink<>(); 
+	@Override
+	public Iterator<V> iterator() {
+		// TODO Auto-generated method stub
+		return new DoubleItr();
+	}
+
+	class DoubleItr implements Iterator<V> {
+
+		Node ptr = start;
+
+		@Override
+		public boolean hasNext() {
+			
+			Node itr = ptr;
+			boolean flag = false;
+			if (Objects.nonNull(itr)) {
+				flag = true;
+			}
+
+			return flag;
+		}
+
+		@Override
+		public V next() {
+			
+			if (hasNext()) {
+				V data = (V) ptr.data;
+				ptr = ptr.next;
+				return data;
+			} else
+				return null;
+		}
+
+	}
+
+	public static void main(String... strings) {
+
+		CustomDoubleLink<Integer> customDoubleLink = new CustomDoubleLink<>();
 		customDoubleLink.add(1);
 		customDoubleLink.add(2);
 		customDoubleLink.add(3);
+
+		// customDoubleLink.print();
+
+//		for (int i : customDoubleLink) {
+//			System.out.println(i);
+//		}
 		
 		customDoubleLink.printREV();
-//		
-	
-		int a = 'c';
-		
+
 	}
-	
+
 }

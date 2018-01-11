@@ -44,6 +44,20 @@ public class CustomDoubleLink<V> implements Iterable<V> {
 		}
 	}
 	
+	public void delete(int i){
+		
+		Node ptr = start;
+		
+		for(int j=1;j<i;j++){
+			ptr = ptr.next;
+		}
+		
+		
+		
+		ptr.next= ptr.next.next;
+		
+	}
+	
 	class Node<V> {
 		V data;
 
@@ -124,14 +138,19 @@ public class CustomDoubleLink<V> implements Iterable<V> {
 		customDoubleLink.add(1);
 		customDoubleLink.add(2);
 		customDoubleLink.add(3);
-
+		customDoubleLink.add(4);
 		// customDoubleLink.print();
 
 //		for (int i : customDoubleLink) {
 //			System.out.println(i);
 //		}
 		
-		customDoubleLink.printREV();
+		customDoubleLink.print();
+		customDoubleLink.delete(2);
+		
+		System.out.println("After");
+		customDoubleLink.print();
+		
 
 	}
 

@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 public class CustomArrayList<V> implements Iterable<V> {
 
 	private static final int INIT_CAPACITY = 10;
-	Object[] objects;
+	Object[] objects,obj1;
 	private int pointer = 0;
 	private int start = 0, end;
 
@@ -27,6 +27,11 @@ public class CustomArrayList<V> implements Iterable<V> {
 		if (pointer <= objects.length - 1) {
 			objects[pointer] = obj;
 			pointer++;
+		}else{
+			obj1 = objects;
+			objects = new Object[obj1.length*2];
+			System.arraycopy(obj1, 0, objects,0, this.pointer);
+			end = objects.length - 1;
 		}
 	}
 
@@ -42,7 +47,7 @@ public class CustomArrayList<V> implements Iterable<V> {
 
 	public void remove(int index) {
 		if (objects[index] != null || objects != null) {
-			objects[index] = null;
+			System.arraycopy(objects, index+1, objects, index+1, this.pointer-index-1);
 		} else {
 			System.out.println("Not a valid");
 		}
@@ -70,7 +75,13 @@ public class CustomArrayList<V> implements Iterable<V> {
         }
 		
 		public boolean hasNext(){
-			return this.cursor<=CustomArrayList.this.end;
+			
+			if(objects[cursor]!=null){
+				return true;
+			}else{
+				return false;
+			}
+			
 		}
 		
 		 public V next() {
@@ -87,11 +98,13 @@ public class CustomArrayList<V> implements Iterable<V> {
 	}
 	
 	public static void main(String... strings) {
-		CustomArrayList<Integer> arrayList = new CustomArrayList<>(15);
+		CustomArrayList<Integer> arrayList = new CustomArrayList<>();
 		for (int i = 0; i < 15; i++) {
 			arrayList.add(i);
 		}
 
+		arrayList.remove(10);
+		
 		for(int a:arrayList){
 			System.out.println(a);
 		}

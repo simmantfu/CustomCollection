@@ -1,26 +1,18 @@
 package com.custom.test;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+import java.util.Objects;
+
 import org.junit.Test;
-import static org.junit.Assert.*;
-import com.custom.*;
-import com.custom.utils.*;
+
+import com.custom.map.CustomHashMap;
+import com.custom.utils.Entity;
 
 public class CustomHashMapTest {
 
 	static CustomHashMap<Integer, String> customHashMap = new CustomHashMap<>();
-
-	
-
-	@Test
-	public void testIterate() {
-		int i = 0;
-		for (Entity e : customHashMap) {
-			i++;
-		}
-		
-		
-		assertSame(1000, i);
-	}
 
 	@Test
 	public void testIterateUnExpected() {
@@ -40,22 +32,27 @@ public class CustomHashMapTest {
 	public void testGetWithNull() {
 		assertEquals(null, customHashMap.get(1003));
 	}
-	
-	
+
 	@Test
 	public void testAddThousandValues() {
-		
-		for(int i =0;i<1000;i++){
-			customHashMap.add(i, "Test"+1);
+
+		for (int i = 0; i < 1000; i++) {
+			customHashMap.add(i, "Test" + 1);
 		}
-		
+
 		int count = 0;
-		
-		for(Entity e : customHashMap){
+
+		for (Entity e : customHashMap) {
+			if (Objects.nonNull(e)) {
+				int a = (int) e.key;
+				String b = (String) e.value;
+
+				// System.out.println(a +""+b);
+			}
 			count++;
 		}
-		
+
 		assertEquals(1000, count);
 	}
-	
+
 }

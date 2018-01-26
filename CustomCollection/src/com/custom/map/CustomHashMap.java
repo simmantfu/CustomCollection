@@ -1,4 +1,4 @@
-package com.custom;
+package com.custom.map;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -49,13 +49,13 @@ public class CustomHashMap<K, T> implements Iterable<Entity> {
 
 		int hashcode = hash(key);
 
-		if(indexCount == bucket.length){
+		if (indexCount == bucket.length) {
 			Entity[] obj = bucket;
-			int k = (int) (obj.length*2);
+			int k = (int) (obj.length * 2);
 			bucket = new Entity[k];
-			System.arraycopy(obj, 0, bucket, 0, indexCount-1);
+			System.arraycopy(obj, 0, bucket, 0, indexCount - 1);
 		}
-		
+
 		if (bucket[hashcode] == null) {
 			indexCount++;
 			Entity head = new Entity(key, value, null);
@@ -68,11 +68,11 @@ public class CustomHashMap<K, T> implements Iterable<Entity> {
 			Entity neEntity = new Entity(key, value, null);
 			neEntity.next = temp;
 			bucket[hashcode] = neEntity;
-			
+
 		}
 
-		bucketItr = new Entity[bucket.length];
-		System.arraycopy(bucket, 0, bucketItr, 0, bucket.length);
+		bucketItr = new Entity[indexCount];
+		System.arraycopy(bucket, 0, bucketItr, 0, indexCount);
 
 	}
 
@@ -115,17 +115,6 @@ public class CustomHashMap<K, T> implements Iterable<Entity> {
 
 	@Override
 	public Iterator<Entity> iterator() {
-		// TODO Auto-generated method stub
-		bucketItr = new Entity[indexCount];
-		int entryCount = 0;
-		for (Entity e : bucket) {
-
-			if (Objects.nonNull(e)) {
-				bucketItr[entryCount] = e;
-				entryCount++;
-			}
-
-		}
 
 		return new MapItr();
 	}
@@ -137,8 +126,6 @@ public class CustomHashMap<K, T> implements Iterable<Entity> {
 
 		@Override
 		public boolean hasNext() {
-			// TODO Auto-generated method stub
-
 			return count < bucketItr.length;
 		}
 
@@ -149,7 +136,7 @@ public class CustomHashMap<K, T> implements Iterable<Entity> {
 
 			if (hasNext()) {
 				result = node;
-				if ( Objects.nonNull(node) && node.next != null) {
+				if (Objects.nonNull(node) && node.next != null) {
 					node = node.next;
 				} else {
 					count++;
@@ -177,28 +164,12 @@ public class CustomHashMap<K, T> implements Iterable<Entity> {
 		customHashMap.add(6, "Test6");
 		customHashMap.add(7, "Test7");
 
-	  //  System.out.println(customHashMap.get(8));
-		
-		// System.out.println(customHashMap.get(1));
-		// System.out.println(customHashMap.get(2));
-		// System.out.println(customHashMap.get(3));
-
 		// Order of Output in map is depends on Hash value of key.
 		for (Entity e : customHashMap) {
 
 			System.out.println(e.key + " " + e.value);
 		}
-		//
-		// customHashMap.update(2, 2);
-		//
-		// System.out.println(customHashMap.get(1));
-		// System.out.println(customHashMap.get(2));
-		//
-		// customHashMap.delete(2);
-		//
-		// System.out.println(customHashMap.get(2));// null will be return
-		//
-		// System.out.println(customHashMap.get(5));// null will be return
+
 	}
 
 }

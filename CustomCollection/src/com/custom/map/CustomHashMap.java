@@ -2,17 +2,18 @@ package com.custom.map;
 
 import java.util.Iterator;
 import java.util.Objects;
-import com.custom.utils.*;
 
-public class CustomHashMap<K, T> implements Iterable<Entity> {
+import com.custom.utils.Entity;
+
+public class CustomHashMap<K, V> implements Iterable<Entity> {
 
 	private static final int capacity_init = 10;
 	static final float DEFAULT_LOAD_FACTOR = 0.75f;
 	private int indexCount = 0;
 
-	Entity[] bucket = null;
+	Entity<K, V>[] bucket = null;
 
-	Entity[] bucketItr = null;
+	Entity<K, V>[] bucketItr = null;
 
 	public CustomHashMap() {
 		init(capacity_init);
@@ -29,7 +30,9 @@ public class CustomHashMap<K, T> implements Iterable<Entity> {
 
 	private int hash(Object key) {
 
-		return key.hashCode() >> 1;
+		// return key.hashCode() >> 1;
+
+		return 0;
 	}
 
 	/*
@@ -45,12 +48,13 @@ public class CustomHashMap<K, T> implements Iterable<Entity> {
 	 * and added to temp.next object.
 	 */
 
-	public void add(K key, T value) {
+	@SuppressWarnings("unchecked")
+	public void add(K key, V value) {
 
 		int hashcode = hash(key);
 
 		if (indexCount == bucket.length) {
-			Entity[] obj = bucket;
+			Entity<K, V>[] obj = bucket;
 			int k = (int) (obj.length * 2);
 			bucket = new Entity[k];
 			System.arraycopy(obj, 0, bucket, 0, indexCount - 1);
@@ -58,21 +62,18 @@ public class CustomHashMap<K, T> implements Iterable<Entity> {
 
 		if (bucket[hashcode] == null) {
 			indexCount++;
-			Entity head = new Entity(key, value, null);
+			Entity<K, V> head = new Entity<K, V>(key, value, null);
 			bucket[hashcode] = head;
 		} else {
-			Entity temp = bucket[hashcode];
-			while (temp.next != null) {
-				temp = temp.next;
-			}
-			Entity neEntity = new Entity(key, value, null);
+
+			// Below statement will add new Entry on exisiting bucket index in
+			// Singly-link list manner
+			Entity<K, V> temp = bucket[hashcode];
+			Entity<K, V> neEntity = new Entity<K, V>(key, value, null);
 			neEntity.next = temp;
 			bucket[hashcode] = neEntity;
 
 		}
-
-		bucketItr = new Entity[indexCount];
-		System.arraycopy(bucket, 0, bucketItr, 0, indexCount);
 
 	}
 
@@ -88,7 +89,7 @@ public class CustomHashMap<K, T> implements Iterable<Entity> {
 	 * return temp.data.
 	 */
 
-	public T get(K key) {
+	public V get(K key) {
 		int hashcode = hash(key);
 		if (bucket[hashcode] == null) {
 			return null;
@@ -97,7 +98,7 @@ public class CustomHashMap<K, T> implements Iterable<Entity> {
 			while (temp != null) {
 
 				if (temp.key.equals(key)) {
-					return (T) temp.value;
+					return (V) temp.value;
 				}
 				temp = temp.next;
 			}
@@ -108,21 +109,34 @@ public class CustomHashMap<K, T> implements Iterable<Entity> {
 
 	public void delete(K key) {
 		int hashcode = hash(key);
-		Entity deleteNode = bucket[hashcode];
-		deleteNode = null;
-		bucket[hashcode] = deleteNode;
+		Entity<K, V> deleteNode = bucket[hashcode];
+		Entity<K, V> updateValue = null;
+		while (deleteNode != null) {
+
+			if (deleteNode.key.equals(key)) {
+				Entity<K, V> temp = deleteNode;
+				updateValue.next = temp.next;
+				deleteNode = updateValue.next;
+			} else {
+				updateValue = deleteNode;
+				deleteNode = deleteNode.next;
+			}
+
+		}
+
 	}
 
 	@Override
 	public Iterator<Entity> iterator() {
-
+		bucketItr = new Entity[indexCount];
+		System.arraycopy(bucket, 0, bucketItr, 0, indexCount);
 		return new MapItr();
 	}
 
-	class MapItr implements Iterator<Entity> {
+	class MapItr<K, V> implements Iterator<Entity<K, V>> {
 
 		int count = 0;
-		Entity node = bucketItr[0];
+		Entity<K, V> node = (Entity<K, V>) bucketItr[0];
 
 		@Override
 		public boolean hasNext() {
@@ -130,9 +144,9 @@ public class CustomHashMap<K, T> implements Iterable<Entity> {
 		}
 
 		@Override
-		public Entity next() {
+		public Entity<K, V> next() {
 
-			Entity result = null;
+			Entity<K, V> result = null;
 
 			if (hasNext()) {
 				result = node;
@@ -141,7 +155,7 @@ public class CustomHashMap<K, T> implements Iterable<Entity> {
 				} else {
 					count++;
 					if (count < bucketItr.length)
-						node = bucketItr[count];
+						node = (Entity<K, V>) bucketItr[count];
 				}
 
 				return result;
@@ -164,6 +178,15 @@ public class CustomHashMap<K, T> implements Iterable<Entity> {
 		customHashMap.add(6, "Test6");
 		customHashMap.add(7, "Test7");
 
+		// Order of Output in map is depends on Hash value of key.
+		for (Entity e : customHashMap) {
+
+			System.out.println(e.key + " " + e.value);
+		}
+
+		customHashMap.delete(5);
+		customHashMap.delete(1);
+		
 		// Order of Output in map is depends on Hash value of key.
 		for (Entity e : customHashMap) {
 

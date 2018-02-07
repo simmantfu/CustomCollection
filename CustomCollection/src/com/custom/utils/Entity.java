@@ -2,12 +2,12 @@ package com.custom.utils;
 
 
 
-public class Entity<K, T> {
+public class Entity<K, V> {
 	public K key;
-	public T value;
-	public Entity next;
+	public V value;
+	public Entity<K,V> next;
 
-	public Entity(K key, T value, Entity next) {
+	public Entity(K key, V value, Entity<K,V> next) {
 
 		this.key = key;
 		this.value = value;

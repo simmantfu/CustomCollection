@@ -8,7 +8,7 @@ import com.custom.utils.Entity;
 public class CustomHashMap<K, V> implements Iterable<Entity> {
 
 	private static final int capacity_init = 10;
-	static final float DEFAULT_LOAD_FACTOR = 0.75f;
+	// static final float DEFAULT_LOAD_FACTOR = 0.75f; - TODO
 	private int indexCount = 0;
 
 	Entity<K, V>[] bucket = null;
@@ -28,11 +28,11 @@ public class CustomHashMap<K, V> implements Iterable<Entity> {
 		bucket = new Entity[intcapacity];
 	}
 
-	private int hash(Object key) {
+	private int hash(int h) {
 
-		// return key.hashCode() >> 1;
-
-		return 0;
+    return h>>>1;
+		
+		
 	}
 
 	/*
@@ -51,7 +51,7 @@ public class CustomHashMap<K, V> implements Iterable<Entity> {
 	@SuppressWarnings("unchecked")
 	public void add(K key, V value) {
 
-		int hashcode = hash(key);
+		int hashcode = hash(key.hashCode());
 
 		if (indexCount == bucket.length) {
 			Entity<K, V>[] obj = bucket;
@@ -90,7 +90,7 @@ public class CustomHashMap<K, V> implements Iterable<Entity> {
 	 */
 
 	public V get(K key) {
-		int hashcode = hash(key);
+		int hashcode = hash(key.hashCode());
 		if (bucket[hashcode] == null) {
 			return null;
 		} else {
@@ -108,7 +108,7 @@ public class CustomHashMap<K, V> implements Iterable<Entity> {
 	}
 
 	public void delete(K key) {
-		int hashcode = hash(key);
+		int hashcode = hash(key.hashCode());
 		Entity<K, V> deleteNode = bucket[hashcode];
 		Entity<K, V> updateValue = null;
 		while (deleteNode != null) {
@@ -152,10 +152,13 @@ public class CustomHashMap<K, V> implements Iterable<Entity> {
 				result = node;
 				if (Objects.nonNull(node) && node.next != null) {
 					node = node.next;
+
 				} else {
 					count++;
-					if (count < bucketItr.length)
+					if (count < bucketItr.length) {
 						node = (Entity<K, V>) bucketItr[count];
+
+					}
 				}
 
 				return result;
@@ -169,7 +172,7 @@ public class CustomHashMap<K, V> implements Iterable<Entity> {
 	// Example How to use this map
 	public static void main(String... str) {
 
-		CustomHashMap<Integer, Object> customHashMap = new CustomHashMap<>();
+		CustomHashMap<Integer, Object> customHashMap = new CustomHashMap<>(20);
 		customHashMap.add(1, "Test1");
 		customHashMap.add(2, "Test2");
 		customHashMap.add(3, "Test3");
@@ -182,16 +185,16 @@ public class CustomHashMap<K, V> implements Iterable<Entity> {
 		for (Entity e : customHashMap) {
 
 			System.out.println(e.key + " " + e.value);
+			// customHashMap.delete(5);
 		}
 
-		customHashMap.delete(5);
-		customHashMap.delete(1);
-		
-		// Order of Output in map is depends on Hash value of key.
-		for (Entity e : customHashMap) {
-
-			System.out.println(e.key + " " + e.value);
-		}
+		// customHashMap.delete(1);
+		//
+		// // Order of Output in map is depends on Hash value of key.
+//		for (Entity e : customHashMap) {
+//
+//			System.out.println(e.key + " " + e.value);
+//		}
 
 	}
 
